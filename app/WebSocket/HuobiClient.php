@@ -2,6 +2,7 @@
 
 namespace App\WebSocket;
 
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use function Ratchet\Client\connect;
@@ -26,20 +27,22 @@ class HuobiClient
      *
      * @var mixed
      */
-    public mixed $conn;
+    private mixed $conn;
     
     /**
-     * 标记连接是否启动
+     * 指令类
      *
-     * @var bool
+     * @var Command
      */
-    public bool $start = false;
+    private Command $command;
     
     /**
      * 构造火币客户端
      */
-    public function __construct()
+    public function __construct(Command $command)
     {
+        $this->command = $command;
+        
         connect(self::API)->then(function ($conn) {
             
             // 接收消息
@@ -50,14 +53,15 @@ class HuobiClient
             // 连接关闭
             $conn->on('close', function ($code = null, $reason = null) {
                 Log::warning("CLOSE: 连接已被关闭 ($code - $reason)");
+                $this->command->info("CLOSE: 连接已被关闭 ($code - $reason)");
             });
             
             $this->conn = $conn;
-            $this->start = true;
             $this->subscribe();
             
         }, function ($e) {
             Log::error('ERROR: 连接失败 ('.$e->getMessage().')');
+            $this->command->info('ERROR: 连接失败 ('.$e->getMessage().')');
         });
     }
     
@@ -96,6 +100,7 @@ class HuobiClient
                 ]));
                 
                 Log::info("SUBSCRIBE: 订阅K线 ($klineSubKey)");
+                $this->command->info("SUBSCRIBE: 订阅K线 ($klineSubKey)");
                 
                 // 一次性拉取订阅K线数据
                 $this->conn->send(json_encode([
@@ -104,11 +109,13 @@ class HuobiClient
                 ]));
                 
                 Log::info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
+                $this->command->info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
                 
             }
         }
         
         Log::info("SUBSCRIBE: 订阅完成");
+        $this->command->info("SUBSCRIBE: 订阅完成");
     }
     
     /**
@@ -146,13 +153,11 @@ class HuobiClient
                 return;
             }
             
-            $cache = Cache::put(
-                $data['id'],
-                json_encode($data['data'], JSON_UNESCAPED_UNICODE)
-            );
+            $cache = Cache::put($data['id'], $data['data']);
             
             if (!$cache) {
                 Log::error('MESSAGE: REP缓存失败 ('.$data['id'].')');
+                $this->command->info('MESSAGE: REP缓存失败 ('.$data['id'].')');
             }
             
             return;

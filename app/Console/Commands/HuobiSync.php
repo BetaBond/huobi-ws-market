@@ -35,7 +35,7 @@ class HuobiSync extends Command
      */
     public function handle(): int
     {
-        new HuobiClient();
+        new HuobiClient($this);
         
         return CommandAlias::SUCCESS;
     }
