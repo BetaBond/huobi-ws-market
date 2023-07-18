@@ -178,6 +178,8 @@ class HuobiClient
             return;
         }
         
+        $this->command->info(json_encode($data));
+        
         // 处理持久订阅
         if (isset($data['ch'])) {
             if (!isset($data['status']) || $data['status'] !== 'ok') {
