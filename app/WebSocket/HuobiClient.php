@@ -60,7 +60,7 @@ class HuobiClient
             $this->conn = $conn;
             
             $this->subscribe($usdTokens);
-            $this->req();
+//            $this->req();
             
         }, function ($e) {
             Log::error('ERROR: 连接失败 ('.$e->getMessage().')');
