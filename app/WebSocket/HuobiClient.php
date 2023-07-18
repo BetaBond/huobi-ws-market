@@ -60,7 +60,6 @@ class HuobiClient
             $this->conn = $conn;
             
             $this->subscribe($usdTokens);
-//            $this->req();
             
         }, function ($e) {
             Log::error('ERROR: 连接失败 ('.$e->getMessage().')');
@@ -115,40 +114,6 @@ class HuobiClient
     }
     
     /**
-     * 一次性订阅
-     *
-     * @return void
-     */
-    public function req(): void
-    {
-        $tokens = Cache::get('subscribe.tokens', []);
-        $periods = [
-            '1min', '5min', '15min',
-            '30min', '60min', '4hour', '1day'
-        ];
-        
-        foreach ($tokens as $token) {
-            foreach ($periods as $period) {
-                
-                $klineReqKey = "market.$token.kline.$period";
-                
-                // 一次性拉取订阅K线数据
-                $this->conn->send(json_encode([
-                    'req' => $klineReqKey,
-                    "id"  => "rep.$klineReqKey"
-                ]));
-                
-                Log::info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
-                $this->command->info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
-                
-                sleep(1);
-            }
-        }
-        
-        $this->req();
-    }
-    
-    /**
      * 消息处理
      *
      * @param  mixed  $msg
@@ -191,6 +156,15 @@ class HuobiClient
                 Log::error('MESSAGE: REP缓存失败 ('.$data['id'].')');
                 $this->command->info('MESSAGE: REP缓存失败 ('.$data['id'].')');
             }
+
+            // 一次性拉取订阅K线数据
+            $this->conn->send(json_encode([
+                'req' => $data['rep'],
+                "id"  => $data['id'],
+            ]));
+            
+            Log::info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
+            $this->command->info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
             
             return;
         }
