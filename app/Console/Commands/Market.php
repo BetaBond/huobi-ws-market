@@ -31,16 +31,21 @@ class Market extends Command
     public function handle(): int
     {
         connect('wss://api.huobi.pro/ws')->then(function ($conn) {
-            $conn->on('message', function ($msg) use ($conn) {
-                $this->info('接收');
-                echo "Received: {$msg}\n";
+            
+            // 处理消息
+            $conn->on('message', function (string $msg) use ($conn) {
+                $data = gzdecode($msg);
+                $data = json_decode($data, true);
+                
+                $this->info(json_encode($data));
+                
                 $conn->close();
             });
             
             $this->info('发送');
             $conn->send(json_encode([
                 "sub" => "market.btcusdt.kline.1min",
-                "id" => "id1"
+                "id"  => "id1"
             ]));
         }, function ($e) {
             $this->info('错误');
