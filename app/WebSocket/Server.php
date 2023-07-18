@@ -61,11 +61,13 @@ class Server implements MessageComponentInterface
                 
                 // 请求必须为 JSON
                 if (!is_array($data)) {
+                    $client->send(64);
                     continue;
                 }
                 
                 // 必须参数
                 if (!isset($data['id'])) {
+                    $client->send(70);
                     continue;
                 }
                 
