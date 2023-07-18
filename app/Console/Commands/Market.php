@@ -36,7 +36,7 @@ class Market extends Command
      */
     public function handle(): int
     {
-        $tokens = ['ethusdt'];
+        $tokens = ['trxusdt'];
         $periods = ['1min', '5min', '15min', '30min', '60min', '4hour', '1day'];
         
         $message = function ($conn, $msg) {
