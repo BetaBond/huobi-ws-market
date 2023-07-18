@@ -73,8 +73,7 @@ class Server implements MessageComponentInterface
     {
         $this->command->info("sub: 订阅处理");
         
-        Timer::tick(500, function () {
-            
+        Timer::after(500, function () {
             $this->command->info(1);
             foreach ($this->subs as $sub => $from) {
                 $ch = Cache::get($sub, []);
