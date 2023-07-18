@@ -52,12 +52,12 @@ class Market extends Command
             }
             
             // 一次性拉取订阅K线数据
-            if (isset($data['req'])) {
+            if (isset($data['rep'])) {
                 $this->info(json_encode($data));
                 return;
             }
             
-             $this->info(json_encode(array_keys($data)));
+             // $this->info(json_encode(array_keys($data)));
         };
         
         // 订阅消息
@@ -80,7 +80,7 @@ class Market extends Command
                     // 一次性拉取订阅K线数据
                     $conn->send(json_encode([
                         'req' => $klineReqKey,
-                        "id"  => "req.$klineReqKey"
+                        "id"  => "rep.$klineReqKey"
                     ]));
                     
                     $this->info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
