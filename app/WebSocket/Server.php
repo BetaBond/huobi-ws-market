@@ -47,6 +47,7 @@ class Server implements MessageComponentInterface
     {
         $this->clients = new SplObjectStorage;
         $this->command = $command;
+        $this->sub();
     }
     
     /**
@@ -60,7 +61,6 @@ class Server implements MessageComponentInterface
     {
         $this->clients->attach($conn);
         $this->command->info('onOpen: 连接启动');
-        $this->sub();
     }
     
     /**
