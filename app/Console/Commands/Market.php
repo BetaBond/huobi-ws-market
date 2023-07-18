@@ -51,7 +51,7 @@ class Market extends Command
                 return;
             }
             
-            $this->info(json_encode($data));
+            // $this->info(json_encode($data));
         };
         
         // 订阅消息
@@ -60,17 +60,24 @@ class Market extends Command
             foreach ($tokens as $token) {
                 foreach ($periods as $period) {
                     
+                    $klineSubKey = "market.$token.kline.$period";
+                    $klineReqKey = "market.$token.kline.$period";
+                    
                     // 订阅K线数据
                     $conn->send(json_encode([
-                        "sub" => "market.$token.kline.$period",
-                        "id"  => "sub.market.$token.kline.$period"
+                        "sub" => $klineSubKey,
+                        "id"  => "sub.$klineSubKey"
                     ]));
+                    
+                    $this->info("SUBSCRIBE: 订阅K线 ($klineSubKey)");
                     
                     // 一次性拉取订阅
                     $conn->send(json_encode([
-                        'req' => "market.$token.kline.$period",
-                        "id"  => "req.market.$token.kline.$period"
+                        'req' => $klineReqKey,
+                        "id"  => "req.$klineReqKey"
                     ]));
+                    
+                    $this->info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
                     
                 }
             }
