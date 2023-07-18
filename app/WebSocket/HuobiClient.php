@@ -131,7 +131,7 @@ class HuobiClient
 //                Log::info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
 //                $this->command->info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
                 
-                usleep(200000);
+                sleep(0.2);
             }
         }
         
