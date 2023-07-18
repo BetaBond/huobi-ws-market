@@ -67,7 +67,7 @@ class Server implements MessageComponentInterface
     {
         $this->command->info("onMessage: $msg");
         foreach ($this->clients as $client) {
-            $this->command->info((string) ($from != $client));
+            $this->command->info($from != $client ? '1' : '0');
             if ($from != $client) {
                 $data = json_decode($msg, true);
                 
