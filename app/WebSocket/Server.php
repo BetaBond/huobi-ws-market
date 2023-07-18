@@ -106,6 +106,13 @@ class Server implements MessageComponentInterface
             $this->subs[$from->resourceId][$data['sub']] = $from;
         }
         
+        // 取消订阅请求
+        if (isset($data['unsub'])) {
+            // 取消订阅
+            /** @noinspection PhpUndefinedFieldInspection */
+            unset($this->subs[$from->resourceId][$data['unsub']]);
+        }
+        
         // 处理 PONG
         if (isset($data['pong'])) {
             $from->send(json_encode(['ping' => time()]));
