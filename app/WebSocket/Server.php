@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
+use React\Promise\Promise;
 use SplObjectStorage;
 
 /**
@@ -47,7 +48,9 @@ class Server implements MessageComponentInterface
     {
         $this->clients = new SplObjectStorage;
         $this->command = $command;
-        $this->sub();
+        new Promise(function () {
+            $this->sub();
+        });
     }
     
     /**
