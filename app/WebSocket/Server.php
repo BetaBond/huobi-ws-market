@@ -118,7 +118,7 @@ class Server implements MessageComponentInterface
                 $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
             }
             
-            sleep(0.1);
+            sleep(1);
         }
     }
     
