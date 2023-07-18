@@ -95,7 +95,7 @@ class Server implements MessageComponentInterface
         
     }
     
-    public function sub(ConnectionInterface $from, array $sub)
+    public function sub(ConnectionInterface $from, string $sub)
     {
         $ch = Cache::get($sub, []);
         $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
