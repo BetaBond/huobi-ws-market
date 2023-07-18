@@ -88,12 +88,6 @@ class HuobiClient
                 
                 $klineSubKey = "market.$token.kline.$period";
                 
-                // 先取消订阅以防止重复订阅
-                $this->conn->send(json_encode([
-                    "unsub" => $klineSubKey,
-                    "id"    => "sub.$klineSubKey"
-                ]));
-                
                 // 订阅K线数据
                 $this->conn->send(json_encode([
                     "sub" => $klineSubKey,
