@@ -60,6 +60,7 @@ class Server implements MessageComponentInterface
     {
         $this->clients->attach($conn);
         $this->command->info('onOpen: 连接启动');
+        $conn->send(json_encode(['ping' => time()]));
     }
     
     /**
@@ -104,7 +105,15 @@ class Server implements MessageComponentInterface
             $this->subs[$from->resourceId][$data['sub']] = $from;
         }
         
-        $from->send(json_encode(['ping' => time()]));
+        // 处理 PONG
+        if (isset($data['pong'])) {
+            
+            foreach ($this->subs as $sub => $from) {
+                $ch = Cache::get($sub, []);
+                $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
+            }
+            
+        }
     }
     
     /**
