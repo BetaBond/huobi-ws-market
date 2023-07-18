@@ -60,7 +60,8 @@ class HuobiClient
             $this->conn = $conn;
             
             $this->subscribe($usdTokens);
-            $this->req($usdTokens);
+            $this->req();
+            $this->subscribeGuard($usdTokens);
             
         }, function ($e) {
             Log::error('ERROR: 连接失败 ('.$e->getMessage().')');
@@ -111,14 +112,38 @@ class HuobiClient
     }
     
     /**
-     * 一次性订阅
+     * 订阅守护
      *
-     * @param  array  $tokens
+     * @param  array  $usdTokens
      *
      * @return void
      */
-    public function req(array $tokens): void
+    public function subscribeGuard(array $usdTokens): void
     {
+        $tokens = Cache::get('subscribe.tokens', []);
+        $diff = !array_diff($usdTokens, $tokens)
+            && !array_diff($tokens, $usdTokens);
+        
+        if (!$diff) {
+            $this->subscribe($tokens);
+            
+            Log::info("SUBSCRIBE: 数据发生更新, 重新进行持久订阅");
+            $this->command->info("SUBSCRIBE: 数据发生更新, 重新进行持久订阅");
+        }
+        
+        sleep(1);
+        
+        $this->subscribeGuard($tokens);
+    }
+    
+    /**
+     * 一次性订阅
+     *
+     * @return void
+     */
+    public function req(): void
+    {
+        $tokens = Cache::get('subscribe.tokens', []);
         $periods = [
             '1min', '5min', '15min',
             '30min', '60min', '4hour', '1day'
@@ -143,7 +168,7 @@ class HuobiClient
         
         sleep(1);
         
-        $this->req($tokens);
+        $this->req();
     }
     
     /**
