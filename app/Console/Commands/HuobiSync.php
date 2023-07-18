@@ -2,19 +2,16 @@
 
 namespace App\Console\Commands;
 
-use App\WebSocket\Server;
+use App\WebSocket\HuobiClient;
 use Illuminate\Console\Command;
-use Ratchet\Http\HttpServer;
-use Ratchet\Server\IoServer;
-use Ratchet\WebSocket\WsServer;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
 /**
- * 订阅代币
+ * 火币数据同步
  *
  * @author beta
  */
-class Subscribe extends Command
+class HuobiSync extends Command
 {
     
     /**
@@ -22,14 +19,14 @@ class Subscribe extends Command
      *
      * @var string
      */
-    protected $signature = 'websocket';
+    protected $signature = 'huobi:sync';
     
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = '火币数据同步';
     
     /**
      * Execute the console command.
@@ -38,14 +35,7 @@ class Subscribe extends Command
      */
     public function handle(): int
     {
-        $server = IoServer::factory(
-            new HttpServer(new WsServer(
-                new Server()
-            )),
-            8090
-        );
-        
-        $server->run();
+        new HuobiClient();
         
         return CommandAlias::SUCCESS;
     }

@@ -49,11 +49,11 @@ class Unsub extends Command
         $cache = Cache::put('subscribe.tokens', $tokens);
         
         if (!$cache) {
-            $this->warn('订阅失败');
+            $this->warn('取消订阅失败');
             return CommandAlias::FAILURE;
         }
         
-        $this->info('订阅成功');
+        $this->info('取消订阅成功');
         
         return CommandAlias::SUCCESS;
     }
