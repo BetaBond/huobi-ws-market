@@ -172,7 +172,7 @@ class HuobiClient
                 "id"  => $data['id'],
             ]));
             
-            Log::info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
+            // Log::info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
             $this->command->info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
             
             return;
