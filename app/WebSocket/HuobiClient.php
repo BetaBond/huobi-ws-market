@@ -166,6 +166,8 @@ class HuobiClient
             return;
         }
         
+        $this->command->info(json_encode($data));
+        
         // 一次性拉取订阅K线数据
         if (isset($data['rep'])) {
             if (!isset($data['status']) || $data['status'] !== 'ok') {
@@ -189,8 +191,6 @@ class HuobiClient
             
             return;
         }
-        
-        $this->command->info(json_encode($data));
         
     }
     
