@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 use function Ratchet\Client\connect;
@@ -54,12 +55,30 @@ class Market extends Command
             
             // 一次性拉取订阅K线数据
             if (isset($data['rep'])) {
-//                $this->info(json_encode($data));
-                Log::info(json_encode($data));
+                if (!isset($data['status']) || $data['status'] !== 'ok') {
+                    return;
+                }
+                
+                if (!isset($data['data']) || !is_array($data['data'])) {
+                    return;
+                }
+                
+                if (!isset($data['id']) || empty($data['data'])) {
+                    return;
+                }
+                
+                $cache = Cache::put(
+                    $data['id'],
+                    json_encode($data['data'], JSON_UNESCAPED_UNICODE)
+                );
+                
+                if (!$cache) {
+                    $this->error('MESSAGE: REP缓存失败 ('.$data['id'].')');
+                }
+                
                 return;
             }
             
-             // $this->info(json_encode(array_keys($data)));
         };
         
         // 订阅消息
