@@ -66,45 +66,34 @@ class Server implements MessageComponentInterface
     public function onMessage(ConnectionInterface $from, mixed $msg): void
     {
         $this->command->info("onMessage: $msg");
-        $from->send('111');
-        foreach ($this->clients as $client) {
-            $this->command->info($from != $client ? '1' : '0');
-            if ($from != $client) {
-                $data = json_decode($msg, true);
-                
-                
-                
-                // 请求必须为 JSON
-                if (!is_array($data)) {
-                    $this->command->info("75");
-                    $client->send('64');
-                    continue;
-                }
-                
-                // 必须参数
-                if (!isset($data['id'])) {
-                    $this->command->info("82");
-                    $client->send('70');
-                    continue;
-                }
-                
-                // 处理一次性拉取K线请求
-                if (isset($data['req'])) {
-                    $req = Cache::get($data['req'], []);
-                    $client->send(json_encode($req, JSON_UNESCAPED_UNICODE));
-                    return;
-                }
-                
-                // 处理CH请求
-                if (isset($data['ch'])) {
-                    $ch = Cache::get($data['ch'], []);
-                    $client->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
-                    return;
-                }
-                
-                $client->send(json_encode($data, JSON_UNESCAPED_UNICODE));
-            }
+        
+        $data = json_decode($msg, true);
+        
+        // 请求必须为 JSON
+        if (!is_array($data)) {
+            $this->command->info("onMessage: NO JSON");
+            return;
         }
+        
+        // 必须参数
+        if (!isset($data['id'])) {
+            $this->command->info("onMessage: NO HAVE ID");
+            return;
+        }
+        
+        // 处理一次性拉取K线请求
+        if (isset($data['req'])) {
+            $req = Cache::get($data['req'], []);
+            $from->send(json_encode($req, JSON_UNESCAPED_UNICODE));
+            return;
+        }
+        
+        // 处理CH请求
+        if (isset($data['ch'])) {
+            $ch = Cache::get($data['ch'], []);
+            $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
+        }
+        
     }
     
     /**
