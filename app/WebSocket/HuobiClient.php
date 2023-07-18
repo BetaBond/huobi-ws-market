@@ -64,11 +64,15 @@ class HuobiClient
                 $tokens = Cache::get('subscribe.tokens', []);
                 $diff = array_diff($usdTokens, $tokens);
                 
+                Log::info($diff);
+                
                 // 判断是否与启动时不同
                 if (!empty($diff)) {
                     $usdTokens = $tokens;
                     $this->subscribe($usdTokens);
                 }
+                
+                sleep(1);
             }
             
         }, function ($e) {
