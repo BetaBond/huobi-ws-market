@@ -97,8 +97,8 @@ class Server implements MessageComponentInterface
         }
         
         // 处理订阅请求
-        if (isset($data['sub']) || isset($data['unsub'])) {
-            $sub = $data['sub'] ?? $data['unsub'];
+        if (isset($data['sub'])) {
+            $sub = $data['sub'];
             $ch = Cache::get($sub, []);
             $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
             // 订阅
