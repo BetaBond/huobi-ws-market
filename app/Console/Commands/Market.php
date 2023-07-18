@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 use function Ratchet\Client\connect;
 
@@ -53,7 +54,8 @@ class Market extends Command
             
             // 一次性拉取订阅K线数据
             if (isset($data['rep'])) {
-                $this->info(json_encode($data));
+//                $this->info(json_encode($data));
+                Log::info(json_encode($data));
                 return;
             }
             
