@@ -39,7 +39,7 @@ class Market extends Command
                 
                 $this->info(json_encode($data));
                 
-                $conn->close();
+                // $conn->close();
             });
             
             $this->info('发送');
