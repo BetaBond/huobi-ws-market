@@ -105,6 +105,6 @@ return [
     |
     */
     
-    'prefix' => 'cache_',
+    'prefix' => 'cache',
 
 ];
