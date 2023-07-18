@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Cache;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use SplObjectStorage;
-use Swoole\Timer;
 
 /**
  * Websocket 服务
@@ -61,27 +60,6 @@ class Server implements MessageComponentInterface
     {
         $this->clients->attach($conn);
         $this->command->info('onOpen: 连接启动');
-        $this->sub();
-    }
-    
-    /**
-     * 订阅程序
-     *
-     * @return void
-     */
-    public function sub(): void
-    {
-        $this->command->info("sub: 订阅处理");
-        
-        Timer::tick(10, function () {
-            $this->command->info(1);
-            foreach ($this->subs as $sub => $from) {
-                $ch = Cache::get($sub, []);
-                $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
-            }
-        });
-        
-        $this->command->info(json_encode(Timer::stats()));
     }
     
     /**
@@ -126,6 +104,7 @@ class Server implements MessageComponentInterface
             $this->subs[$from->resourceId][$data['sub']] = $from;
         }
         
+        $from->send(json_encode(['ping' => time()]));
     }
     
     /**
