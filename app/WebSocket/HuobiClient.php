@@ -174,14 +174,14 @@ class HuobiClient
             $cache = Cache::put($data['ch'], $data);
             
             if (!$cache) {
-                Log::error('MESSAGE: CH缓存失败 ('.$data['id'].')');
-                $this->command->info('MESSAGE: CH缓存失败 ('.$data['id'].')');
+                Log::error('MESSAGE: CH缓存失败 ('.$data['ch'].')');
+                $this->command->info('MESSAGE: CH缓存失败 ('.$data['ch'].')');
             }
             
             // 一次性拉取订阅K线数据
             $this->conn->send(json_encode([
                 'req' => $data['ch'],
-                "id"  => 'kline.rep.'.$data['id'],
+                "id"  => 'kline.rep.'.$data['ch'],
             ]));
             
             // Log::info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
