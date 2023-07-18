@@ -31,6 +31,8 @@ class Server implements MessageComponentInterface
      */
     private Command $command;
     
+    private array $subs = [];
+    
     /**
      * 构造服务
      *
@@ -53,6 +55,14 @@ class Server implements MessageComponentInterface
     {
         $this->clients->attach($conn);
         $this->command->info('onOpen: 连接启动');
+    }
+    
+    public function sub(): void
+    {
+        
+        sleep(0.5);
+        
+        $this->sub();
     }
     
     /**
@@ -92,6 +102,8 @@ class Server implements MessageComponentInterface
         if (isset($data['sub'])) {
             $ch = Cache::get($data['sub'], []);
             $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
+            $from->send($from->resourceId);
+//            $this->subs[] = ['form' => $from, 'sub' => $data['sub']];
         }
         
     }
