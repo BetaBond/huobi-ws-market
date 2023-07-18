@@ -103,8 +103,6 @@ class Server implements MessageComponentInterface
             $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
             // 订阅
             /** @noinspection PhpUndefinedFieldInspection */
-            $this->subs[$from->resourceId] = [];
-            /** @noinspection PhpUndefinedFieldInspection */
             $this->subs[$from->resourceId][$data['sub']] = $from;
         }
         
