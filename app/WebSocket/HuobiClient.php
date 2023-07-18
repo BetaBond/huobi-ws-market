@@ -135,8 +135,6 @@ class HuobiClient
     {
         $data = gzdecode($msg);
         $data = json_decode($data, true);
-
-//        $this->command->info(json_encode($data));
         
         // PING
         if (isset($data['ping'])) {
@@ -161,7 +159,7 @@ class HuobiClient
                 return;
             }
             
-            $cache = Cache::put($data['id'], $data['data']);
+            $cache = Cache::put($data['id'], $data);
             
             if (!$cache) {
                 Log::error('MESSAGE: REP缓存失败 ('.$data['id'].')');
@@ -178,6 +176,30 @@ class HuobiClient
             $this->command->info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
             
             return;
+        }
+        
+        // 处理持久订阅
+        if (isset($data['ch'])) {
+            if (!isset($data['status']) || $data['status'] !== 'ok') {
+                return;
+            }
+            
+            if (!isset($data['tick']) || !is_array($data['tick'])) {
+                return;
+            }
+            
+            $cache = Cache::put($data['ch'], $data);
+            
+            if (!$cache) {
+                Log::error('MESSAGE: REP缓存失败 ('.$data['id'].')');
+                $this->command->info('MESSAGE: REP缓存失败 ('.$data['id'].')');
+            }
+            
+            if (!$cache) {
+                Log::error('MESSAGE: REP缓存失败 ('.$data['id'].')');
+                $this->command->info('MESSAGE: REP缓存失败 ('.$data['id'].')');
+            }
+            
         }
         
     }
