@@ -19,7 +19,7 @@ class All extends Command
      *
      * @var string
      */
-    protected $signature = 'tokens:sub';
+    protected $signature = 'tokens:all';
     
     /**
      * The console command description.
