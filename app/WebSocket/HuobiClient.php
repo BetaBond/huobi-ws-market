@@ -58,22 +58,9 @@ class HuobiClient
             
             $usdTokens = Cache::get('subscribe.tokens', []);
             $this->conn = $conn;
-            $this->subscribe($usdTokens);
             
-            while (true) {
-                $tokens = Cache::get('subscribe.tokens', []);
-                $diff = array_diff($usdTokens, $tokens);
-                
-                Log::info($diff);
-                
-                // 判断是否与启动时不同
-                if (!empty($diff)) {
-                    $usdTokens = $tokens;
-                    $this->subscribe($usdTokens);
-                }
-                
-                sleep(1);
-            }
+            $this->subscribe($usdTokens);
+            $this->req($usdTokens);
             
         }, function ($e) {
             Log::error('ERROR: 连接失败 ('.$e->getMessage().')');
@@ -100,7 +87,6 @@ class HuobiClient
             foreach ($periods as $period) {
                 
                 $klineSubKey = "market.$token.kline.$period";
-                $klineReqKey = "market.$token.kline.$period";
                 
                 // 先取消订阅以防止重复订阅
                 $this->conn->send(json_encode([
@@ -117,6 +103,32 @@ class HuobiClient
                 Log::info("SUBSCRIBE: 订阅K线 ($klineSubKey)");
                 $this->command->info("SUBSCRIBE: 订阅K线 ($klineSubKey)");
                 
+            }
+        }
+        
+        Log::info("SUBSCRIBE: 持久订阅完成");
+        $this->command->info("SUBSCRIBE: 持久订阅完成");
+    }
+    
+    /**
+     * 一次性订阅
+     *
+     * @param  array  $tokens
+     *
+     * @return void
+     */
+    public function req(array $tokens): void
+    {
+        $periods = [
+            '1min', '5min', '15min',
+            '30min', '60min', '4hour', '1day'
+        ];
+        
+        foreach ($tokens as $token) {
+            foreach ($periods as $period) {
+                
+                $klineReqKey = "market.$token.kline.$period";
+                
                 // 一次性拉取订阅K线数据
                 $this->conn->send(json_encode([
                     'req' => $klineReqKey,
@@ -128,9 +140,6 @@ class HuobiClient
                 
             }
         }
-        
-        Log::info("SUBSCRIBE: 订阅完成");
-        $this->command->info("SUBSCRIBE: 订阅完成");
     }
     
     /**
