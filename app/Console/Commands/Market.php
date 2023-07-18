@@ -33,7 +33,7 @@ class Market extends Command
         connect('wss://api.huobi.pro/ws')->then(function ($conn) {
             
             // 处理消息
-            $conn->on('message', function (string $msg) use ($conn) {
+            $conn->on('message', function (mixed $msg) use ($conn) {
                 $data = gzdecode($msg);
                 $data = json_decode($data, true);
                 
