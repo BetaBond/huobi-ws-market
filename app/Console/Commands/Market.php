@@ -57,7 +57,7 @@ class Market extends Command
                 return;
             }
             
-            // $this->info(json_encode($data));
+             $this->info(json_encode(array_keys($data)));
         };
         
         // 订阅消息
