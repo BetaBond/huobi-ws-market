@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Tokens;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
 /**
@@ -11,7 +12,7 @@ use Symfony\Component\Console\Command\Command as CommandAlias;
  *
  * @author beta
  */
-class TokensSub extends Command
+class Sub extends Command
 {
     
     /**

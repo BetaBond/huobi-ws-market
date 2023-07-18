@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Cache;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
 /**
- * 订阅代币
+ * 获取所有代币
  *
  * @author beta
  */
-class Unsub extends Command
+class All extends Command
 {
     
     /**
@@ -35,25 +35,17 @@ class Unsub extends Command
      */
     public function handle(): int
     {
-        $token = $this->ask('您想要取消订阅的代币?');
+        $tokens = Cache::get('subscribe.tokens', '[]');
+        $tokens = json_decode($tokens, true);
         
-        $tokens = Cache::get('subscribe.tokens', []);
-        
-        if (!in_array($token, $tokens)) {
-            $this->warn('代币不存在, 可能从未订阅!');
+        if (is_array($tokens)) {
+            $this->warn('存储异常');
             return CommandAlias::FAILURE;
         }
         
-        $tokens = array_diff($tokens, [$token]);
-        
-        $cache = Cache::put('subscribe.tokens', $tokens);
-        
-        if (!$cache) {
-            $this->warn('订阅失败');
-            return CommandAlias::FAILURE;
+        foreach ($tokens as $token) {
+            $this->info($token);
         }
-        
-        $this->info('订阅成功');
         
         return CommandAlias::SUCCESS;
     }
