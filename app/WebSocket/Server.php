@@ -71,7 +71,11 @@ class Server implements MessageComponentInterface
      */
     public function sub(): void
     {
+        $this->command->info("sub: 订阅处理");
+        
         Timer::tick(500, function () {
+            
+            $this->command->info(1);
             foreach ($this->subs as $sub => $from) {
                 $ch = Cache::get($sub, []);
                 $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
