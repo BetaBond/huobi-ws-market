@@ -184,7 +184,7 @@ class HuobiClient
                 "id"  => 'kline.rep.'.$data['ch'],
             ]));
             
-            // Log::info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
+            // Log::info('SUBSCRIBE: 一次性订阅K线 ('.$data['ch'].')');
             $this->command->info('SUBSCRIBE: 一次性订阅K线 ('.$data['ch'].')');
             
         }
