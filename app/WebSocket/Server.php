@@ -102,12 +102,14 @@ class Server implements MessageComponentInterface
             $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
             // 订阅
             /** @noinspection PhpUndefinedFieldInspection */
+            $this->subs[$from->resourceId] = [];
+            /** @noinspection PhpUndefinedFieldInspection */
             $this->subs[$from->resourceId][$data['sub']] = $from;
         }
         
         // 处理 PONG
         if (isset($data['pong'])) {
-            $from->send(json_encode(['ping' => time()]));
+//            $from->send(json_encode(['ping' => time()]));
             
             /** @noinspection PhpUndefinedFieldInspection */
 //            foreach (array_keys($this->subs[$from->resourceId]) as $sub) {
