@@ -140,6 +140,10 @@ class HuobiClient
                 
             }
         }
+        
+        sleep(1);
+        
+        $this->req($tokens);
     }
     
     /**
