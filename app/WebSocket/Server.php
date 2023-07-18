@@ -5,8 +5,8 @@ namespace App\WebSocket;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+use Ratchet\MessageComponentInterface;
 use SplObjectStorage;
 
 /**
@@ -31,6 +31,11 @@ class Server implements MessageComponentInterface
      */
     private Command $command;
     
+    /**
+     * 订阅集合
+     *
+     * @var array
+     */
     private array $subs = [];
     
     /**
@@ -102,7 +107,8 @@ class Server implements MessageComponentInterface
         if (isset($data['sub'])) {
             $ch = Cache::get($data['sub'], []);
             $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
-            $from->send($from->resourceId);
+            $from->send(json_encode([$this->clients->getInfo()]));
+            $from->send(json_encode([$this->clients->current()]));
 //            $this->subs[] = ['form' => $from, 'sub' => $data['sub']];
         }
         
@@ -117,6 +123,9 @@ class Server implements MessageComponentInterface
      */
     public function onClose(ConnectionInterface $conn): void
     {
+        // 注销订阅
+//        unset($this->subs[$conn->resourceId]);
+        
         $this->clients->detach($conn);
         $this->command->info('onClose: 连接关闭');
     }
