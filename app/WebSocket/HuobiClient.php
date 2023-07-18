@@ -184,10 +184,6 @@ class HuobiClient
                 return;
             }
             
-            if (!isset($data['tick']) || !is_array($data['tick'])) {
-                return;
-            }
-            
             $cache = Cache::put($data['ch'], $data);
             
             if (!$cache) {
