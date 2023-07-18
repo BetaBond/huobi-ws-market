@@ -110,16 +110,15 @@ class Server implements MessageComponentInterface
         
         // 处理 PONG
         if (isset($data['pong'])) {
-//            $from->send(json_encode(['ping' => time()]));
+            $from->send(json_encode(['ping' => time()]));
             
             /** @noinspection PhpUndefinedFieldInspection */
-//            foreach (array_keys($this->subs[$from->resourceId]) as $sub) {
-//                $ch = Cache::get($sub, []);
-//                $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
-//            }
-//
-//
-//            sleep(10);
+            foreach (array_keys($this->subs[$from->resourceId]) as $sub) {
+                $ch = Cache::get($sub, []);
+                $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
+            }
+            
+            sleep(0.1);
         }
     }
     
