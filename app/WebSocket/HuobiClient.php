@@ -127,11 +127,11 @@ class HuobiClient
                     'req' => $klineReqKey,
                     "id"  => "rep.$klineReqKey"
                 ]));
-                
+
 //                Log::info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
 //                $this->command->info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
                 
-                usleep(20000);
+                usleep(200000);
             }
         }
         
