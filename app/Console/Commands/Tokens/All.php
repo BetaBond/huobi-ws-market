@@ -35,13 +35,7 @@ class All extends Command
      */
     public function handle(): int
     {
-        $tokens = Cache::get('subscribe.tokens', '[]');
-        $tokens = json_decode($tokens, true);
-        
-        if (is_array($tokens)) {
-            $this->warn('存储异常');
-            return CommandAlias::FAILURE;
-        }
+        $tokens = Cache::get('subscribe.tokens', []);
         
         foreach ($tokens as $token) {
             $this->info($token);
