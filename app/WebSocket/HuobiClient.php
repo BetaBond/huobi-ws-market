@@ -178,24 +178,13 @@ class HuobiClient
             return;
         }
         
-        $this->command->info(json_encode($data));
-        
         // 处理持久订阅
         if (isset($data['ch'])) {
-            if (!isset($data['status']) || $data['status'] !== 'ok') {
-                return;
-            }
-            
             $cache = Cache::put($data['ch'], $data);
             
             if (!$cache) {
-                Log::error('MESSAGE: REP缓存失败 ('.$data['id'].')');
-                $this->command->info('MESSAGE: REP缓存失败 ('.$data['id'].')');
-            }
-            
-            if (!$cache) {
-                Log::error('MESSAGE: REP缓存失败 ('.$data['id'].')');
-                $this->command->info('MESSAGE: REP缓存失败 ('.$data['id'].')');
+                Log::error('MESSAGE: CH缓存失败 ('.$data['id'].')');
+                $this->command->info('MESSAGE: CH缓存失败 ('.$data['id'].')');
             }
             
         }
