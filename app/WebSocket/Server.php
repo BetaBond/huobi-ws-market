@@ -84,7 +84,7 @@ class Server implements MessageComponentInterface
         }
         
         // 必须参数
-        if (!isset($data['id'])) {
+        if (!isset($data['id']) && !isset($data['pong'])) {
             $this->command->info("onMessage: NO HAVE ID");
             return;
         }
@@ -107,6 +107,7 @@ class Server implements MessageComponentInterface
         
         // 处理 PONG
         if (isset($data['pong'])) {
+            $from->send(json_encode(['ping' => time()]));
             
             foreach ($this->subs as $sub => $from) {
                 $ch = Cache::get($sub, []);
