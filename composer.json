@@ -11,6 +11,7 @@
 		"php": "^8.1",
 		"ext-pdo": "*",
 		"ext-zlib": "*",
+		"ext-swoole": "*",
 		"cboden/ratchet": "^0.4.4",
 		"guzzlehttp/guzzle": "^7.2",
 		"laravel/framework": "^9.19",

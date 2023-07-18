@@ -7,8 +7,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
-use React\Promise\Promise;
 use SplObjectStorage;
+use Swoole\Timer;
 
 /**
  * Websocket 服务
@@ -48,9 +48,6 @@ class Server implements MessageComponentInterface
     {
         $this->clients = new SplObjectStorage;
         $this->command = $command;
-        new Promise(function () {
-            $this->sub();
-        });
     }
     
     /**
@@ -64,6 +61,7 @@ class Server implements MessageComponentInterface
     {
         $this->clients->attach($conn);
         $this->command->info('onOpen: 连接启动');
+        $this->sub();
     }
     
     /**
@@ -73,14 +71,12 @@ class Server implements MessageComponentInterface
      */
     public function sub(): void
     {
-        foreach ($this->subs as $sub => $from) {
-            $ch = Cache::get($sub, []);
-            $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
-        }
-        
-        sleep(0.5);
-        
-        $this->sub();
+        Timer::tick(500, function () {
+            foreach ($this->subs as $sub => $from) {
+                $ch = Cache::get($sub, []);
+                $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
+            }
+        });
     }
     
     /**
