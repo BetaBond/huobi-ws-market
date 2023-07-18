@@ -90,7 +90,7 @@ class Server implements MessageComponentInterface
         
         // 处理订阅请求
         if (isset($data['sub'])) {
-            $ch = Cache::get($data['ch'], []);
+            $ch = Cache::get($data['sub'], []);
             $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
         }
         
