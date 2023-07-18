@@ -30,7 +30,7 @@ class Market extends Command
      */
     public function handle(): int
     {
-        connect('ws://api.huobi.pro:443/ws')->then(function ($conn) {
+        connect('wss://api.huobi.pro/ws')->then(function ($conn) {
             $conn->on('message', function ($msg) use ($conn) {
                 $this->info('接收');
                 echo "Received: {$msg}\n";
