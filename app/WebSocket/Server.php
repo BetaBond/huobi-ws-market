@@ -109,7 +109,8 @@ class Server implements MessageComponentInterface
         if (isset($data['pong'])) {
             $from->send(json_encode(['ping' => time()]));
             
-            foreach (array_keys($this->subs) as $sub) {
+            /** @noinspection PhpUndefinedFieldInspection */
+            foreach (array_keys($this->subs[$from->resourceId]) as $sub) {
                 $ch = Cache::get($sub, []);
                 $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
             }
