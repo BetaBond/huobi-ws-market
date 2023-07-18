@@ -42,12 +42,18 @@ class Market extends Command
             $data = gzdecode($msg);
             $data = json_decode($data, true);
             
-            // 处理请求
+            // PING
             if (isset($data['ping'])) {
                 $conn->send(json_encode([
                     "pong" => $data['ping']
                 ]));
                 
+                return;
+            }
+            
+            // 一次性拉取订阅K线数据
+            if (isset($data['req'])) {
+                $this->info(json_encode($data));
                 return;
             }
             
@@ -71,7 +77,7 @@ class Market extends Command
                     
                     $this->info("SUBSCRIBE: 订阅K线 ($klineSubKey)");
                     
-                    // 一次性拉取订阅
+                    // 一次性拉取订阅K线数据
                     $conn->send(json_encode([
                         'req' => $klineReqKey,
                         "id"  => "req.$klineReqKey"
