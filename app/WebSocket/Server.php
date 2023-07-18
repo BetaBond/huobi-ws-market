@@ -116,7 +116,7 @@ class Server implements MessageComponentInterface
             }
             
             
-            sleep(0.1);
+            sleep(10);
         }
     }
     
