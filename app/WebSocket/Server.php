@@ -83,7 +83,7 @@ class Server implements MessageComponentInterface
         
         // 处理一次性拉取K线请求
         if (isset($data['req'])) {
-            $req = Cache::get($data['req'], []);
+            $req = Cache::get('kline.req.'.$data['req'], []);
             $from->send(json_encode($req, JSON_UNESCAPED_UNICODE));
             return;
         }
