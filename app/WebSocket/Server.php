@@ -88,8 +88,8 @@ class Server implements MessageComponentInterface
             return;
         }
         
-        // 处理CH请求
-        if (isset($data['ch'])) {
+        // 处理订阅请求
+        if (isset($data['sub'])) {
             $ch = Cache::get($data['ch'], []);
             $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
         }
