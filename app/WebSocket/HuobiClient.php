@@ -83,6 +83,17 @@ class HuobiClient
         
         // 遍历订阅
         foreach ($tokens as $token) {
+            $tradeDetailSubKey = "market.$token.trade.detail";
+            
+            // 订阅K线数据
+            $this->conn->send(json_encode([
+                "sub" => $tradeDetailSubKey,
+                "id"  => "trade.detail.$tradeDetailSubKey"
+            ]));
+            
+            Log::info("SUBSCRIBE: 订阅市场概要 ($tradeDetailSubKey)");
+            $this->command->info("SUBSCRIBE: 订阅市场概要 ($tradeDetailSubKey)");
+            
             foreach ($periods as $period) {
                 
                 $klineReqKey = "market.$token.kline.$period";
@@ -91,7 +102,7 @@ class HuobiClient
                 // 一次性拉取订阅K线数据
                 $this->conn->send(json_encode([
                     'req' => $klineReqKey,
-                    "id"  => "rep.$klineReqKey"
+                    "id"  => "kline.rep.$klineReqKey"
                 ]));
                 
                 Log::info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
@@ -100,7 +111,7 @@ class HuobiClient
                 // 订阅K线数据
                 $this->conn->send(json_encode([
                     "sub" => $klineSubKey,
-                    "id"  => "sub.$klineSubKey"
+                    "id"  => "kline.sub.$klineSubKey"
                 ]));
                 
                 Log::info("SUBSCRIBE: 订阅K线 ($klineSubKey)");
@@ -124,7 +135,7 @@ class HuobiClient
     {
         $data = gzdecode($msg);
         $data = json_decode($data, true);
-        
+
 //        $this->command->info(json_encode($data));
         
         // PING
@@ -156,7 +167,7 @@ class HuobiClient
                 Log::error('MESSAGE: REP缓存失败 ('.$data['id'].')');
                 $this->command->info('MESSAGE: REP缓存失败 ('.$data['id'].')');
             }
-
+            
             // 一次性拉取订阅K线数据
             $this->conn->send(json_encode([
                 'req' => $data['rep'],
