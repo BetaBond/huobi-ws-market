@@ -3,6 +3,7 @@
 namespace App\WebSocket;
 
 use Exception;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
@@ -24,13 +25,21 @@ class Server implements MessageComponentInterface
     protected SplObjectStorage $clients;
     
     /**
+     * 指令类
+     *
+     * @var Command
+     */
+    private Command $command;
+    
+    /**
      * 构造服务
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Command $command)
     {
         $this->clients = new SplObjectStorage;
+        $this->command = $command;
     }
     
     /**
@@ -43,6 +52,7 @@ class Server implements MessageComponentInterface
     public function onOpen(ConnectionInterface $conn): void
     {
         $this->clients->attach($conn);
+        $this->command->info('onOpen: 连接启动');
     }
     
     /**
@@ -55,19 +65,21 @@ class Server implements MessageComponentInterface
      */
     public function onMessage(ConnectionInterface $from, mixed $msg): void
     {
+        $this->command->info("onMessage: $msg");
+        
         foreach ($this->clients as $client) {
             if ($from != $client) {
                 $data = json_decode($msg, true);
                 
                 // 请求必须为 JSON
                 if (!is_array($data)) {
-                    $client->send(64);
+                    $client->send('64');
                     continue;
                 }
                 
                 // 必须参数
                 if (!isset($data['id'])) {
-                    $client->send(70);
+                    $client->send('70');
                     continue;
                 }
                 
@@ -100,6 +112,7 @@ class Server implements MessageComponentInterface
     public function onClose(ConnectionInterface $conn): void
     {
         $this->clients->detach($conn);
+        $this->command->info('onClose: 连接关闭');
     }
     
     /**
@@ -113,6 +126,7 @@ class Server implements MessageComponentInterface
     public function onError(ConnectionInterface $conn, Exception $e): void
     {
         $conn->close();
+        $this->command->info('onError: 发生错误 ('.$e->getMessage().')');
     }
     
 }

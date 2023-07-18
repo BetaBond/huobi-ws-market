@@ -40,7 +40,7 @@ class WebSocket extends Command
     {
         $server = IoServer::factory(
             new HttpServer(new WsServer(
-                new Server()
+                new Server($this)
             )),
             8090
         );
