@@ -56,8 +56,20 @@ class HuobiClient
                 $this->command->info("CLOSE: 连接已被关闭 ($code - $reason)");
             });
             
+            $usdTokens = Cache::get('subscribe.tokens', []);
             $this->conn = $conn;
-            $this->subscribe();
+            $this->subscribe($usdTokens);
+            
+            while (true) {
+                $tokens = Cache::get('subscribe.tokens', []);
+                $diff = array_diff($usdTokens, $tokens);
+                
+                // 判断是否与启动时不同
+                if (!empty($diff)) {
+                    $usdTokens = $tokens;
+                    $this->subscribe($usdTokens);
+                }
+            }
             
         }, function ($e) {
             Log::error('ERROR: 连接失败 ('.$e->getMessage().')');
@@ -68,17 +80,16 @@ class HuobiClient
     /**
      * 订阅处理
      *
+     * @param  array  $tokens
+     *
      * @return void
      */
-    public function subscribe(): void
+    public function subscribe(array $tokens): void
     {
         $periods = [
             '1min', '5min', '15min',
             '30min', '60min', '4hour', '1day'
         ];
-        
-        // 从 Cache 中取出需要订阅的代币
-        $tokens = Cache::get('subscribe.tokens', []);
         
         // 遍历订阅
         foreach ($tokens as $token) {
