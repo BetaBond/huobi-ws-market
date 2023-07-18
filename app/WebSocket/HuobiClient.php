@@ -60,7 +60,7 @@ class HuobiClient
             $this->conn = $conn;
             
             $this->subscribe($usdTokens);
-//            $this->req();
+            $this->req();
             
         }, function ($e) {
             Log::error('ERROR: 连接失败 ('.$e->getMessage().')');
@@ -131,10 +131,9 @@ class HuobiClient
                 Log::info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
                 $this->command->info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
                 
+                usleep(10000);
             }
         }
-        
-        sleep(1);
         
         $this->req();
     }
