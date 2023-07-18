@@ -19,14 +19,14 @@ class Unsub extends Command
      *
      * @var string
      */
-    protected $signature = 'tokens:sub';
+    protected $signature = 'tokens:unsub';
     
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '订阅代币';
+    protected $description = '取消订阅代币';
     
     /**
      * Execute the console command.

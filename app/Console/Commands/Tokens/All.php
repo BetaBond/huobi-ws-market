@@ -26,7 +26,7 @@ class All extends Command
      *
      * @var string
      */
-    protected $description = '订阅代币';
+    protected $description = '获取所有已经订阅的代币';
     
     /**
      * Execute the console command.
