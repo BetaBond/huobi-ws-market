@@ -66,19 +66,20 @@ class Server implements MessageComponentInterface
     public function onMessage(ConnectionInterface $from, mixed $msg): void
     {
         $this->command->info("onMessage: $msg");
-        
         foreach ($this->clients as $client) {
             if ($from != $client) {
                 $data = json_decode($msg, true);
                 
                 // 请求必须为 JSON
                 if (!is_array($data)) {
+                    $this->command->info("75");
                     $client->send('64');
                     continue;
                 }
                 
                 // 必须参数
                 if (!isset($data['id'])) {
+                    $this->command->info("82");
                     $client->send('70');
                     continue;
                 }
