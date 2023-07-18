@@ -180,8 +180,8 @@ class HuobiClient
             
             // 一次性拉取订阅K线数据
             $this->conn->send(json_encode([
-                'req' => $data['rep'],
-                "id"  => $data['id'],
+                'req' => $data['ch'],
+                "id"  => 'kline.rep.'.$data['id'],
             ]));
             
             // Log::info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
