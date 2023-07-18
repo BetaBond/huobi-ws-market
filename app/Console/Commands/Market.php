@@ -37,6 +37,13 @@ class Market extends Command
                 $data = gzdecode($msg);
                 $data = json_decode($data, true);
                 
+                // 处理请求
+                if (isset($data['ping'])) {
+                    $conn->send(json_encode([
+                        "pong" => $data['ping']
+                    ]));
+                }
+                
                 $this->info(json_encode($data));
                 
                 // $conn->close();
