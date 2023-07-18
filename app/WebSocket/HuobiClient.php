@@ -105,7 +105,7 @@ class HuobiClient
                     "id"  => "kline.rep.$klineReqKey"
                 ]));
                 
-                Log::info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
+                // Log::info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
                 $this->command->info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
                 
                 // 订阅K线数据
@@ -166,15 +166,6 @@ class HuobiClient
                 $this->command->info('MESSAGE: REP缓存失败 ('.$data['id'].')');
             }
             
-            // 一次性拉取订阅K线数据
-            $this->conn->send(json_encode([
-                'req' => $data['rep'],
-                "id"  => $data['id'],
-            ]));
-            
-            // Log::info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
-            $this->command->info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
-            
             return;
         }
         
@@ -186,6 +177,15 @@ class HuobiClient
                 Log::error('MESSAGE: CH缓存失败 ('.$data['id'].')');
                 $this->command->info('MESSAGE: CH缓存失败 ('.$data['id'].')');
             }
+            
+            // 一次性拉取订阅K线数据
+            $this->conn->send(json_encode([
+                'req' => $data['rep'],
+                "id"  => $data['id'],
+            ]));
+            
+            // Log::info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
+            $this->command->info('SUBSCRIBE: 一次性订阅K线 ('.$data['rep'].')');
             
         }
         
