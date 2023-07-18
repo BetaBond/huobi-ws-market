@@ -125,7 +125,7 @@ class HuobiClient
         $data = gzdecode($msg);
         $data = json_decode($data, true);
         
-        $this->command->info(json_encode($data));
+//        $this->command->info(json_encode($data));
         
         // PING
         if (isset($data['ping'])) {
