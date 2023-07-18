@@ -60,7 +60,7 @@ class HuobiClient
             $this->conn = $conn;
             
             $this->subscribe($usdTokens);
-            $this->req();
+//            $this->req();
             
         }, function ($e) {
             Log::error('ERROR: 连接失败 ('.$e->getMessage().')');
@@ -86,7 +86,17 @@ class HuobiClient
         foreach ($tokens as $token) {
             foreach ($periods as $period) {
                 
+                $klineReqKey = "market.$token.kline.$period";
                 $klineSubKey = "market.$token.kline.$period";
+                
+                // 一次性拉取订阅K线数据
+                $this->conn->send(json_encode([
+                    'req' => $klineReqKey,
+                    "id"  => "rep.$klineReqKey"
+                ]));
+                
+                Log::info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
+                $this->command->info("SUBSCRIBE: 一次性订阅K线 ($klineReqKey)");
                 
                 // 订阅K线数据
                 $this->conn->send(json_encode([
