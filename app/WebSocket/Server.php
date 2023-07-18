@@ -24,13 +24,6 @@ class Server implements MessageComponentInterface
     protected SplObjectStorage $clients;
     
     /**
-     * 火币客户端实例
-     *
-     * @var HuobiClient
-     */
-    private HuobiClient $huobiClient;
-    
-    /**
      * 构造服务
      *
      * @return void
@@ -38,7 +31,6 @@ class Server implements MessageComponentInterface
     public function __construct()
     {
         $this->clients = new SplObjectStorage;
-//        $this->huobiClient = new HuobiClient();
     }
     
     /**
@@ -77,17 +69,19 @@ class Server implements MessageComponentInterface
                     continue;
                 }
                 
-                // 火币端必须连接
-//                if (!$this->huobiClient->start) {
-//                    continue;
-//                }
-                
                 // 处理一次性拉取K线请求
                 if (isset($data['req'])) {
+                    $req = Cache::get($data['req'], []);
+                    $client->send(json_encode($req, JSON_UNESCAPED_UNICODE));
                     return;
                 }
                 
-                $client->send($msg);
+                // 处理CH请求
+                if (isset($data['ch'])) {
+                    $req = Cache::get($data['ch'], []);
+                    $client->send(json_encode($req, JSON_UNESCAPED_UNICODE));
+                    return;
+                }
             }
         }
     }
