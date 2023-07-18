@@ -157,6 +157,8 @@ class HuobiClient
         $data = gzdecode($msg);
         $data = json_decode($data, true);
         
+        $this->command->info(json_encode($data));
+        
         // PING
         if (isset($data['ping'])) {
             $this->conn->send(json_encode([
@@ -165,8 +167,6 @@ class HuobiClient
             
             return;
         }
-        
-        $this->command->info(json_encode($data));
         
         // 一次性拉取订阅K线数据
         if (isset($data['rep'])) {
