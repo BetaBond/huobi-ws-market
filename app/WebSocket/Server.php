@@ -80,6 +80,8 @@ class Server implements MessageComponentInterface
                 $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
             }
         });
+        
+        $this->command->info(json_encode(Timer::stats()));
     }
     
     /**
