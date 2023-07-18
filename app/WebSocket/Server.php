@@ -60,10 +60,20 @@ class Server implements MessageComponentInterface
     {
         $this->clients->attach($conn);
         $this->command->info('onOpen: 连接启动');
+        $this->sub();
     }
     
+    /**
+     * 订阅程序
+     *
+     * @return void
+     */
     public function sub(): void
     {
+        foreach ($this->subs as $sub => $from) {
+            $ch = Cache::get($sub, []);
+            $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
+        }
         
         sleep(0.5);
         
@@ -107,9 +117,9 @@ class Server implements MessageComponentInterface
         if (isset($data['sub'])) {
             $ch = Cache::get($data['sub'], []);
             $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
-            $from->send(json_encode([$this->clients->getInfo()]));
-            $from->send(json_encode([$this->clients->current()]));
-//            $this->subs[] = ['form' => $from, 'sub' => $data['sub']];
+            // 订阅
+            /** @noinspection PhpUndefinedFieldInspection */
+            $this->subs[$from->resourceId][$data['sub']] = $from;
         }
         
     }
@@ -124,7 +134,8 @@ class Server implements MessageComponentInterface
     public function onClose(ConnectionInterface $conn): void
     {
         // 注销订阅
-//        unset($this->subs[$conn->resourceId]);
+        /** @noinspection PhpUndefinedFieldInspection */
+        unset($this->subs[$conn->resourceId]);
         
         $this->clients->detach($conn);
         $this->command->info('onClose: 连接关闭');
