@@ -90,19 +90,10 @@ class Server implements MessageComponentInterface
         
         // 处理订阅请求
         if (isset($data['sub'])) {
-            $this->sub($from, $data['sub']);
+            $ch = Cache::get($data['sub'], []);
+            $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
         }
         
-    }
-    
-    public function sub(ConnectionInterface $from, string $sub)
-    {
-        $ch = Cache::get($sub, []);
-        $from->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
-        
-        sleep(0.1);
-        
-        $this->sub($from, $sub);
     }
     
     /**
