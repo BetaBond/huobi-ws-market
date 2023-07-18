@@ -78,10 +78,12 @@ class Server implements MessageComponentInterface
                 
                 // 处理CH请求
                 if (isset($data['ch'])) {
-                    $req = Cache::get($data['ch'], []);
-                    $client->send(json_encode($req, JSON_UNESCAPED_UNICODE));
+                    $ch = Cache::get($data['ch'], []);
+                    $client->send(json_encode($ch, JSON_UNESCAPED_UNICODE));
                     return;
                 }
+                
+                $client->send(json_encode($data, JSON_UNESCAPED_UNICODE));
             }
         }
     }
