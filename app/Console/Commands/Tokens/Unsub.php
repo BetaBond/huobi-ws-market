@@ -46,7 +46,7 @@ class Unsub extends Command
         
         $tokens = array_diff($tokens, [$token]);
         
-        $cache = Cache::put('subscribe.tokens', $tokens);
+        $cache = Cache::forever('subscribe.tokens', $tokens);
         
         if (!$cache) {
             $this->warn('取消订阅失败');

@@ -46,7 +46,7 @@ class Sub extends Command
         
         $tokens[] = $token;
         
-        $cache = Cache::put('subscribe.tokens', $tokens);
+        $cache = Cache::forever('subscribe.tokens', $tokens);
         
         if (!$cache) {
             $this->warn('订阅失败');
