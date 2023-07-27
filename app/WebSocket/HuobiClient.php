@@ -43,7 +43,17 @@ class HuobiClient
     {
         $this->command = $command;
         
-        connect(self::API)->then(function ($conn) {
+        
+    }
+    
+    /**
+     * 初始化连接
+     *
+     * @param  int  $retry
+     */
+    public function init(int $retry = 0): void
+    {
+        connect(self::API)->then(function ($conn) use ($retry) {
             
             // 接收消息
             $conn->on('message', function (mixed $msg) use ($conn) {
@@ -51,9 +61,15 @@ class HuobiClient
             });
             
             // 连接关闭
-            $conn->on('close', function ($code = null, $reason = null) {
+            $conn->on('close', function (
+                $code = null,
+                $reason = null
+            ) use ($retry) {
                 Log::warning("CLOSE: 连接已被关闭 ($code - $reason)");
                 $this->command->info("CLOSE: 连接已被关闭 ($code - $reason)");
+                // 重新启动连接
+                $retry += 1;
+                $this->init($retry);
             });
             
             $usdTokens = Cache::get('subscribe.tokens', []);
@@ -61,9 +77,12 @@ class HuobiClient
             
             $this->subscribe($usdTokens);
             
-        }, function ($e) {
+        }, function ($e) use ($retry) {
             Log::error('ERROR: 连接失败 ('.$e->getMessage().')');
             $this->command->info('ERROR: 连接失败 ('.$e->getMessage().')');
+            // 重新启动连接
+            $retry += 1;
+            $this->init($retry);
         });
     }
     
