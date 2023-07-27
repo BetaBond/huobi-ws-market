@@ -42,8 +42,7 @@ class HuobiClient
     public function __construct(Command $command)
     {
         $this->command = $command;
-        
-        
+        $this->init();
     }
     
     /**
